@@ -1,9 +1,13 @@
 import type { ReactNode } from 'react';
 
-function TodoSpanValue(): ReactNode {
+type Props = {
+  readonly title: string
+}
+
+function TodoSpanValue({ title }: Props): ReactNode {
   return (
     <span className="todosSpanValue">
-      ABC
+      {title}
     </span>
   );
 };
