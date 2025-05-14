@@ -6,7 +6,7 @@ Créer un nouveau projet React avec Vite appelé `todos-react`.
 
 ## JSX
 
-Reprendre le HTML suivant et le transformer en JSX dans `App.jsx` :
+Reprendre le HTML suivant et le transformer en JSX dans `App.tsx` :
 
 ```
 <form class="todos-form">
