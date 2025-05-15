@@ -8,6 +8,8 @@ function Counter() {
   const [count, setCount] = useState(0);
   const [list, setList] = useState<string[]>([]);
 
+
+
   function handleClick(event: MouseEvent<HTMLButtonElement>) {
     console.log(event.currentTarget.nodeName); // BUTTON
     console.log('Button clicked');
