@@ -1,23 +1,39 @@
-import './App.css';
-import {
-  useState,
-  type ChangeEvent,
-  type FormEvent,
-  type ReactNode,
-} from 'react';
-import TodoItem from './TodoItem';
-import type { Todo } from './todo';
-import { useImmer } from 'use-immer';
+import "./App.css";
+import { useEffect, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
+import TodoItem from "./TodoItem";
+import type { Todo } from "./todo";
+import { useImmer } from "use-immer";
+import { fetchTodos } from "./api";
 
 function App(): ReactNode {
-  const [todos, setTodos] = useImmer<Todo[]>([
-    { id: 123, title: 'ABC', completed: false },
-    { id: 456, title: 'DEF', completed: true },
-    { id: 789, title: 'XYZ', completed: false },
-  ]);
-  const [newTodo, setNewTodo] = useState('HIJ');
+  const [todos, setTodos] = useImmer<Todo[]>([]);
+  const [newTodo, setNewTodo] = useState("HIJ");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const editingId = 789;
+  const [editingId, setEditingId] = useState(-1);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchTodos().then((data) => {
+      setTodos(data);
+      setIsLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    function handleClick(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+      
+      if (!target.classList.contains("todosInputValue")) {
+        setEditingId(-1);
+      }
+    }
+
+    window.addEventListener('click', handleClick);
+    return () => {
+      window.removeEventListener('click', handleClick);
+    }
+  }, []);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,7 +43,7 @@ function App(): ReactNode {
     // setTodos((draft) => {
     //   draft.push({ id: Date.now(), title: newTodo, completed: false });
     // });
-    setNewTodo('');
+    setNewTodo("");
   }
 
   function handleToggleClick(event: ChangeEvent<HTMLInputElement>) {
@@ -47,20 +63,25 @@ function App(): ReactNode {
     });
   }
 
+  function handleTodoDelete(id: number) {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  }
+
+  function handleTodoEdit(todo: Todo) {
+    setTodos((draft) => {
+      const index = draft.findIndex((t) => t.id === todo.id);
+      if (index !== -1) {
+        draft[index] = todo;
+      }
+    });
+  }
+
   return (
     <>
+      {isLoading && <div>Loading...</div>}
       <form className="todos-form" onSubmit={handleSubmit}>
-        <input
-          type="checkbox"
-          className="todos-toggle-checked"
-          onChange={handleToggleClick}
-        />
-        <input
-          type="text"
-          className="todos-new-input"
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
-        />
+        <input type="checkbox" className="todos-toggle-checked" onChange={handleToggleClick} />
+        <input type="text" className="todos-new-input" value={newTodo} onChange={(e) => setNewTodo(e.target.value)} />
         <button>+</button>
       </form>
       <div className="todos-container">
@@ -69,6 +90,9 @@ function App(): ReactNode {
             key={todo.id}
             todo={todo}
             isEditing={todo.id === editingId}
+            onDelete={handleTodoDelete}
+            onToggleEdit={(id) => setEditingId(id)}
+            onEdit={handleTodoEdit}
           />
         ))}
       </div>
