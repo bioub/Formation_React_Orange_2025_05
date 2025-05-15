@@ -7,9 +7,10 @@ import {
 } from 'react';
 import TodoItem from './TodoItem';
 import type { Todo } from './todo';
+import { useImmer } from 'use-immer';
 
 function App(): ReactNode {
-  const [todos, setTodos] = useState<Todo[]>([
+  const [todos, setTodos] = useImmer<Todo[]>([
     { id: 123, title: 'ABC', completed: false },
     { id: 456, title: 'DEF', completed: true },
     { id: 789, title: 'XYZ', completed: false },
@@ -20,20 +21,30 @@ function App(): ReactNode {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // Ici on clone nous même le tableau
     setTodos([...todos, { id: Date.now(), title: newTodo, completed: false }]);
+    // Ici on utilise immer pour cloner le tableau
+    // setTodos((draft) => {
+    //   draft.push({ id: Date.now(), title: newTodo, completed: false });
+    // });
     setNewTodo('');
   }
 
   function handleToggleClick(event: ChangeEvent<HTMLInputElement>) {
     const isChecked = event.currentTarget.checked;
-    setTodos(
-      todos.map((todo) => {
-        if (todo.completed !== isChecked) {
-          return { ...todo, completed: isChecked };
-        }
-        return todo;
-      }),
-    );
+    // setTodos(
+    //   todos.map((todo) => {
+    //     if (todo.completed !== isChecked) {
+    //       return { ...todo, completed: isChecked };
+    //     }
+    //     return todo;
+    //   }),
+    // );
+    setTodos((draft) => {
+      for (const todo of draft) {
+        todo.completed = isChecked;
+      }
+    });
   }
 
   return (
