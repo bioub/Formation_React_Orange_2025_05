@@ -75,7 +75,7 @@ function TodosPage(): ReactNode {
             todo={todo}
             isEditing={todo.id === editingId}
             onDelete={handleTodoDelete}
-            onToggleEdit={(id) => setEditingId(id)}
+            onToggleEdit={(id) => dispatch(setEditingId(id))}
             onEdit={handleTodoEdit}
           />
         ))}
