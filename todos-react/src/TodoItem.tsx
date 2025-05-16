@@ -34,7 +34,7 @@ function TodoItem({
     <div className="todosItem" data-todo-id={todo.id}>
       <input type="checkbox" name="completed" className="todosCompleted" checked={todo.completed} onChange={handleChange}  />
       {isEditing ? (
-        <input name="title" className="todosInputValue" value={todo.title} onChange={handleChange} onKeyUp={handleKeyUp}/>
+        <input type="text" name="title" className="todosInputValue" value={todo.title} onChange={handleChange} onKeyUp={handleKeyUp}/>
       ) : (
         <span className="todosSpanValue" onDoubleClick={() => onToggleEdit(todo.id)}>
           {todo.title}

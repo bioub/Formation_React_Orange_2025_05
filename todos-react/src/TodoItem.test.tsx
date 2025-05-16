@@ -22,3 +22,17 @@ test('TodoItem can be deleted', () => {
   expect(handleDelete).toHaveBeenCalledTimes(1);
   expect(handleDelete).toHaveBeenCalledWith(123);
 });
+
+// Exercice 1 :
+// Vérifier que TodoItem affiche bien le titre
+
+// Exercice 2 :
+// Vérifier qu'au double-click sur le titre onToggleEdit est bien appelé
+// avec l'id de la todo
+
+// Bonus :
+// Vérifier que si isEditing vaut true c'est un champ qui s'affiche
+// Vérifier qu'à la saisie dans le champ onEdit est bien appelé
+// avec la todo mis à jour (title modifié)
+// Indice : utiliser getByRole('textbox') pour récupérer le champ
+// Indice : utiliser @testing-library/user-event pour simuler la saisie
