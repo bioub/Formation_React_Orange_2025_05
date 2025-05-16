@@ -6,7 +6,7 @@ type Props = {
 
 function HelloComponent({ name }: Props): ReactNode {
   return (
-    <div>
+    <div data-testid="hello-component">
       Hello {name}
     </div>
   );

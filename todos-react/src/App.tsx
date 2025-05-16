@@ -18,12 +18,15 @@ function App(): ReactNode {
       setTodos(data);
       setIsLoading(false);
     });
-  }, []);
+  }, [setTodos]);
 
   useEffect(() => {
     function handleClick(event: MouseEvent) {
       const target = event.target as HTMLElement;
-      
+
+      // TODO: utiliser useRef pour que le code soit plus maintenable
+      // si on change le nom de la classe, il faudrait changer le code ici
+      // pas avec une ref
       if (!target.classList.contains("todosInputValue")) {
         setEditingId(-1);
       }

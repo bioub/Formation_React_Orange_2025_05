@@ -1,34 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function useInterval(callback: () => void, delay: number) {
-  // TODO: useRef
+  const savedCallback = useRef<() => void>(null);
+
+  if (savedCallback.current === null) {
+    savedCallback.current = callback;
+  }
+
   useEffect(() => {
+    console.log('setInterval');
     const intervalId = setInterval(() => {
-      callback();
+      savedCallback.current!();
     }, delay);
     return () => {
+      console.log('clearInterval');
       clearInterval(intervalId);
     };
   }
-  , [callback, delay]);
+  , [delay]);
 };
 
 function Clock() {
   const [time, setTime] = useState(new Date());
   const [delay, setDelay] = useState(1000);
 
-  // useInterval(() => {
-  //   setTime(new Date());
-  // }, delay);
+  useInterval(() => {
+    setTime(new Date());
+  }, delay);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTime(new Date());
-    }, delay);
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [delay]);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     setTime(new Date());
+  //   }, delay);
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, [delay]);
 
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/posts')

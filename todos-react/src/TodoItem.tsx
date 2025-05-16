@@ -1,4 +1,4 @@
-import type { ChangeEvent, KeyboardEvent, ReactNode } from "react";
+import { useEffect, useRef, type ChangeEvent, type KeyboardEvent, type ReactNode } from "react";
 import type { Todo } from "./todo";
 
 type Props = {
@@ -30,11 +30,20 @@ function TodoItem({
     }
   }
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
   return (
     <div className="todosItem" data-todo-id={todo.id}>
       <input type="checkbox" name="completed" className="todosCompleted" checked={todo.completed} onChange={handleChange}  />
       {isEditing ? (
-        <input type="text" name="title" className="todosInputValue" value={todo.title} onChange={handleChange} onKeyUp={handleKeyUp}/>
+        <input ref={inputRef} type="text" name="title" className="todosInputValue" value={todo.title} onChange={handleChange} onKeyUp={handleKeyUp} />
       ) : (
         <span className="todosSpanValue" onDoubleClick={() => onToggleEdit(todo.id)}>
           {todo.title}
