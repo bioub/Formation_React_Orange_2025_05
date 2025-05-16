@@ -7,6 +7,8 @@ export type CountState = {
 export type TodosState = {
   items: Todo[];
   loading: boolean;
+  editingId: number;
+  newTodo: string;
 };
 
 export type State = {

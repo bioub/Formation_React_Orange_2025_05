@@ -12,3 +12,11 @@ export function todosSelector(state: State): Todo[] {
 export function todosLoadingSelector(state: State): boolean {
   return state.todos.loading;
 }
+
+export function todosEditingIdSelector(state: State): number {
+  return state.todos.editingId;
+}
+
+export function todosNewTodoSelector(state: State): string {
+  return state.todos.newTodo;
+}

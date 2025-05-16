@@ -1,18 +1,16 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
+import { useEffect, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import TodoItem from "./TodoItem";
 import type { Todo } from "./todo";
 import { fetchTodos } from "./api";
 import { useDispatch, useSelector } from "react-redux";
-import { todosLoadingSelector, todosSelector } from "./store/selectors";
-import { addTodo, receiveTodos, requestTodos } from "./store/slices";
+import { todosEditingIdSelector, todosLoadingSelector, todosNewTodoSelector, todosSelector } from "./store/selectors";
+import { addTodo, deleteTodo, receiveTodos, requestTodos, setEditingId, setNewTodo, toggleAllCompleted, updateTodo } from "./store/slices";
 
 function TodosPage(): ReactNode {
-  // const [todos, setTodos] = useImmer<Todo[]>([]);
-  const [newTodo, setNewTodo] = useState("HIJ");
-  const [editingId, setEditingId] = useState(-1);
-
   const todos = useSelector(todosSelector);
   const isLoading = useSelector(todosLoadingSelector);
+  const newTodo = useSelector(todosNewTodoSelector);
+  const editingId = useSelector(todosEditingIdSelector);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -33,7 +31,7 @@ function TodosPage(): ReactNode {
       // si on change le nom de la classe, il faudrait changer le code ici
       // pas avec une ref
       if (!target.classList.contains("todosInputValue")) {
-        setEditingId(-1);
+        dispatch(setEditingId(-1));
       }
     }
 
@@ -47,38 +45,19 @@ function TodosPage(): ReactNode {
     event.preventDefault();
     
     dispatch(addTodo({ id: Date.now(), title: newTodo, completed: false }));
-    
-    setNewTodo("");
   }
 
   function handleToggleClick(event: ChangeEvent<HTMLInputElement>) {
     const isChecked = event.currentTarget.checked;
-    // setTodos(
-    //   todos.map((todo) => {
-    //     if (todo.completed !== isChecked) {
-    //       return { ...todo, completed: isChecked };
-    //     }
-    //     return todo;
-    //   }),
-    // );
-    // setTodos((draft) => {
-    //   for (const todo of draft) {
-    //     todo.completed = isChecked;
-    //   }
-    // });
+    dispatch(toggleAllCompleted(isChecked));
   }
 
   function handleTodoDelete(id: number) {
-    // setTodos(todos.filter((todo) => todo.id !== id));
+    dispatch(deleteTodo(id));
   }
 
   function handleTodoEdit(todo: Todo) {
-    // setTodos((draft) => {
-    //   const index = draft.findIndex((t) => t.id === todo.id);
-    //   if (index !== -1) {
-    //     draft[index] = todo;
-    //   }
-    // });
+    dispatch(updateTodo(todo));
   }
 
   return (
@@ -86,7 +65,7 @@ function TodosPage(): ReactNode {
       {isLoading && <div>Loading...</div>}
       <form className="todos-form" onSubmit={handleSubmit}>
         <input type="checkbox" className="todos-toggle-checked" onChange={handleToggleClick} />
-        <input type="text" className="todos-new-input" value={newTodo} onChange={(e) => setNewTodo(e.target.value)} />
+        <input type="text" className="todos-new-input" value={newTodo} onChange={(e) => dispatch(setNewTodo(e.target.value))} />
         <button>+</button>
       </form>
       <div className="todos-container">
