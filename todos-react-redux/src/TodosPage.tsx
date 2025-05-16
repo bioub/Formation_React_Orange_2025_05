@@ -1,23 +1,29 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import TodoItem from "./TodoItem";
 import type { Todo } from "./todo";
-import { useImmer } from "use-immer";
 import { fetchTodos } from "./api";
+import { useDispatch, useSelector } from "react-redux";
+import { todosLoadingSelector, todosSelector } from "./store/selectors";
+import { addTodo, receiveTodos, requestTodos } from "./store/slices";
 
 function TodosPage(): ReactNode {
-  const [todos, setTodos] = useImmer<Todo[]>([]);
+  // const [todos, setTodos] = useImmer<Todo[]>([]);
   const [newTodo, setNewTodo] = useState("HIJ");
-  const [isLoading, setIsLoading] = useState(false);
-
   const [editingId, setEditingId] = useState(-1);
 
+  const todos = useSelector(todosSelector);
+  const isLoading = useSelector(todosLoadingSelector);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    setIsLoading(true);
+    if (todos.length > 0) {
+      return;
+    }
+    dispatch(requestTodos())
     fetchTodos().then((data) => {
-      setTodos(data);
-      setIsLoading(false);
+      dispatch(receiveTodos(data));
     });
-  }, [setTodos]);
+  }, [dispatch]);
 
   useEffect(() => {
     function handleClick(event: MouseEvent) {
@@ -39,12 +45,9 @@ function TodosPage(): ReactNode {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    // Ici on clone nous même le tableau
-    setTodos([...todos, { id: Date.now(), title: newTodo, completed: false }]);
-    // Ici on utilise immer pour cloner le tableau
-    // setTodos((draft) => {
-    //   draft.push({ id: Date.now(), title: newTodo, completed: false });
-    // });
+    
+    dispatch(addTodo({ id: Date.now(), title: newTodo, completed: false }));
+    
     setNewTodo("");
   }
 
@@ -58,24 +61,24 @@ function TodosPage(): ReactNode {
     //     return todo;
     //   }),
     // );
-    setTodos((draft) => {
-      for (const todo of draft) {
-        todo.completed = isChecked;
-      }
-    });
+    // setTodos((draft) => {
+    //   for (const todo of draft) {
+    //     todo.completed = isChecked;
+    //   }
+    // });
   }
 
   function handleTodoDelete(id: number) {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    // setTodos(todos.filter((todo) => todo.id !== id));
   }
 
   function handleTodoEdit(todo: Todo) {
-    setTodos((draft) => {
-      const index = draft.findIndex((t) => t.id === todo.id);
-      if (index !== -1) {
-        draft[index] = todo;
-      }
-    });
+    // setTodos((draft) => {
+    //   const index = draft.findIndex((t) => t.id === todo.id);
+    //   if (index !== -1) {
+    //     draft[index] = todo;
+    //   }
+    // });
   }
 
   return (

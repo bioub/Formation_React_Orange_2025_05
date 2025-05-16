@@ -6,6 +6,9 @@ import HomePage from './HomePage.tsx'
 import TodosPage from './TodosPage.tsx'
 import AboutPage from './AboutPage.tsx'
 import App from './App.tsx'
+import { Provider } from 'react-redux'
+import { configureStore } from '@reduxjs/toolkit'
+import { countReducer, todosReducer } from './store/slices.ts'
 
 const router = createBrowserRouter([
   {
@@ -28,8 +31,17 @@ const router = createBrowserRouter([
   }
 ]);
 
+const store = configureStore({
+  reducer: {
+    count: countReducer,
+    todos: todosReducer,
+  },
+});
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>,
 )

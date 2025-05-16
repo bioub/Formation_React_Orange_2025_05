@@ -1,54 +1,36 @@
-# React + TypeScript + Vite
+# Exercices
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Exercice 1
 
-Currently, two official plugins are available:
+Ajouter les actions suivantes dans todosSlice :
+- deleteTodo (appelée avec un id en payload)
+doit supprimer la todo du tableau
+- toggleAllCompleted (qui sera appelée avec true/false) :
+doit passer toutes les clés completed à true/false en fonction de payload
+- updateTodo (qui sera appelée avec une todo)
+doit mettre à jour les clés title et completed de la todo en fonction
+de l'id de la todo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Exporter ses actions
 
-## Expanding the ESLint configuration
+Puis utiliser dispatch dans TodoPage pour faire les modification sur le store dans les event handlers.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Exercice 2
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Passer editingId dans le store.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Modifier TodosState dans store/types.ts pour y ajouter une clé editingId
+de type number et l'initialiser à -1 dans slices.ts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Ajouter un reducer dans le slice todosSlice appelé setEditingId qui recevra
+en payload l'id (type number) et mettre à jour la clé editingId avec ce payload
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Exporter l'action creator
+
+Ecrire un selecteur dans store/selector pour récupérer editingId
+
+Dans TodosPage, utiliser useSelector pour récupérer la editingId, utiliser dispatch(setEditingId(...)) pour mettre à jour editingId où c'est nécessaire.
+
+## Bonus : Exercice 3
+
+Passer newTodo dans le store, à vous de trouver les étapes
